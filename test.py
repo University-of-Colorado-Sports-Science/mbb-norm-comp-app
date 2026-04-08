@@ -63,7 +63,7 @@ with col1:
             
         with comb_col2:
             shuttle = st.number_input("Enter Shuttle",
-                                  min_value=0,
+                                  min_value=0.00,
                                   max_value=4.50,
                                   key="shuttle")
             sprint = st.number_input("Enter Sprint",
