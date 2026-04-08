@@ -346,6 +346,25 @@ with col3:
             'Contact Time': st.session_state.contact_time_percentile * 100
         }
 
+        if st.session_state.nordic_force == 0:
+            athlete_percentiles_dict['Nordic Force'] = None
+        if st.session_state.nordic_imbalance == 0:
+            athlete_percentiles_dict['Nordic Imbalance'] = None
+        if st.session_state.adduction_force == 0:
+            athlete_percentiles_dict['Adduction Force'] = None
+        if st.session_state.abduction_force == 0:
+            athlete_percentiles_dict['Abduction Force'] = None
+        if st.session_state.adduction_imbalance == 0:
+            athlete_percentiles_dict['Adduction Imbalance'] = None
+        if st.session_state.abduction_imbalance == 0:
+            athlete_percentiles_dict['Abduction Imbalance'] = None
+        if st.session_state.ad_ab_ratio == 0:
+            athlete_percentiles_dict['Adduction:Abduction Ratio'] = None
+        if st.session_state.rsi == 0:
+            athlete_percentiles_dict['RSI'] = None
+        if st.session_state.contact_time == 0:
+            athlete_percentiles_dict['Contact Time'] = None
+
         valid_categories = []
         valid_percentiles = []
 
