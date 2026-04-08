@@ -396,6 +396,6 @@ with col3:
 
 st.divider()
 
-spacer1, logo_col, spacer2 = st.columns([2,1,2])
+spacer1, logo_col, spacer2 = st.columns([3,1,3])
 with logo_col:
-    st.image("data/Sports Science Logo Final_gold_text.png", width=150)
+    st.image("data/Sports Science Logo Final_gold_text.png", width=75)
