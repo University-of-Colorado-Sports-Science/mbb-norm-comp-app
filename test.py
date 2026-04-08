@@ -359,29 +359,29 @@ with col3:
             athlete_percentiles_arr = valid_percentiles + [valid_percentiles[0]]
             angles = [i * (360 / len(valid_categories)) for i in range(len(valid_categories))] + [0]
 
-            fig_anthro = go.Figure()
+            fig_vald = go.Figure()
             rotation_angle = 90 if len(valid_categories) in [3, 4] else 18 if len(valid_categories) == 5 else 30 - (180 / len(valid_categories))
             axis_angle = 0 if len(valid_categories) == 4 else 18 if len(valid_categories) == 5 else 30 - (180 / len(valid_categories))
 
-            fig_anthro.add_trace(go.Scatterpolar(r=[100] * len(categories), theta=angles, marker_line_width=2, opacity=0.8, fill='toself', marker=dict(color=bgcolors[0]), hoverinfo='skip'))
+            fig_vald.add_trace(go.Scatterpolar(r=[100] * len(categories), theta=angles, marker_line_width=2, opacity=0.8, fill='toself', marker=dict(color=bgcolors[0]), hoverinfo='skip'))
             for i in range(1, 5):
-                fig_anthro.add_trace(go.Scatterpolar(r=[100 - (20 * i)] * len(categories), theta=angles, marker_line_width=2, fill='toself', marker=dict(color=bgcolors[i-1]), hoverinfo='skip'))
+                fig_vald.add_trace(go.Scatterpolar(r=[100 - (20 * i)] * len(categories), theta=angles, marker_line_width=2, fill='toself', marker=dict(color=bgcolors[i-1]), hoverinfo='skip'))
 
             callout_labels = [f"{int(round(val))}" for val in athlete_percentiles_arr]
 
-            fig_anthro.add_trace(go.Scatterpolar(
+            fig_vald.add_trace(go.Scatterpolar(
                 r=athlete_percentiles_arr, theta=angles, mode='lines+markers+text', text=callout_labels, textposition='middle center',
                 textfont=dict(color='white', size=12, family='Helvetica'),
                 marker=dict(size=26, color='#565A5C', line=dict(color='#CFB87C', width=2)),
-                fill='toself', fillcolor='rgba(207, 184, 124, 0.3)', line=dict(color='#CFB87C', width=3), name='Anthro Profile'
+                fill='toself', fillcolor='rgba(207, 184, 124, 0.3)', line=dict(color='#CFB87C', width=3), name='VALD Profile'
             ))
 
-            fig_anthro.update_polars(
+            fig_vald.update_polars(
                 angularaxis=dict(rotation=rotation_angle, tickvals=angles[:-1], ticktext=valid_categories, showgrid=False, layer='above traces'),
                 radialaxis=dict(angle=axis_angle,showticklabels=True, showgrid=False, gridwidth=0, tickfont=dict(color='white', size=12), layer='below traces'),
                 gridshape='linear',
                 bgcolor='rgba(0,0,0,0)'
             )
-            fig_anthro.update_layout(showlegend=False, paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)', margin=dict(l=20, r=20, t=20, b=20))
+            fig_vald.update_layout(showlegend=False, paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)', margin=dict(l=20, r=20, t=20, b=20))
             
-            st.plotly_chart(fig_anthro, width='stretch')
+            st.plotly_chart(fig_vald, width='stretch')
