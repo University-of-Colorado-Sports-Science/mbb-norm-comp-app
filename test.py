@@ -291,7 +291,7 @@ with col3:
     with st.form(key="vald_input_form"):
 
         vald_col1, vald_col2 = st.columns(2)
-        
+
         with vald_col1:
             nordic_force = st.number_input("Enter Nordic Force",
                                     min_value=150.0,
