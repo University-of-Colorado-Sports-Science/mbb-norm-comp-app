@@ -453,7 +453,7 @@ with col3:
 
             st.divider() # A nice visual break between the chart and the numbers
             st.markdown("### VALD Quartiles")
-            
+
             # Create a mini 2-column grid inside your main column
             metric_cols = st.columns(2)
 
@@ -469,6 +469,6 @@ with col3:
 
 st.divider()
 
-spacer1, logo_col, spacer2 = st.columns([3,1,3])
+spacer1, logo_col, spacer2 = st.columns([5,1,5])
 with logo_col:
-    st.image("data/Sports Science Logo Final_gold_text.png", width=75)
+    st.image("data/Sports Science Logo Final_gold_text.png", width=50)
