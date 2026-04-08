@@ -393,3 +393,9 @@ with col3:
             fig_vald.update_layout(showlegend=False, paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)', margin=dict(l=20, r=20, t=20, b=20))
             
             st.plotly_chart(fig_vald, width='stretch')
+
+st.divider()
+
+spacer1, logo_col, spacer2 = st.columns([1, 1, 1])
+with logo_col:
+    st.image("data/Sports Science Logo Final_gold_text.png", width=150)
