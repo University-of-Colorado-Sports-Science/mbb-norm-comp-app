@@ -30,7 +30,7 @@ percentiles = load_data()
 bgcolors = ["#565A5C", "#787B7D", "#9A9C9D", "#BBBDBE", "#DDDEDE"]
 
 # --- LAYOUT: CREATE TWO COLUMNS ---
-col1, col2 = st.columns(2)
+col1, col2, col3 = st.columns(3)
 
 # ==========================================
 # COLUMN 1: COMBINE METRICS
@@ -220,6 +220,127 @@ with col2:
 
         if st.session_state.weight == 0:
             athlete_percentiles_dict['Weight'] = None
+
+        valid_categories = []
+        valid_percentiles = []
+
+        for metric, value in athlete_percentiles_dict.items():
+            if value is not None and not pd.isna(value):
+                valid_categories.append(metric)
+                valid_percentiles.append(value)
+
+        if len(valid_categories) < 3:
+            st.warning("Not enough data to draw a radar profile. Please enter at least 3 metrics.")
+        else:
+            categories = valid_categories + [valid_categories[0]]
+            athlete_percentiles_arr = valid_percentiles + [valid_percentiles[0]]
+            angles = [i * (360 / len(valid_categories)) for i in range(len(valid_categories))] + [0]
+
+            fig_anthro = go.Figure()
+            rotation_angle = 90 if len(valid_categories) in [3, 4] else 18 if len(valid_categories) == 5 else 30 - (180 / len(valid_categories))
+            axis_angle = 0 if len(valid_categories) == 4 else 18 if len(valid_categories) == 5 else 30 - (180 / len(valid_categories))
+
+            fig_anthro.add_trace(go.Scatterpolar(r=[100] * len(categories), theta=angles, marker_line_width=2, opacity=0.8, fill='toself', marker=dict(color=bgcolors[0]), hoverinfo='skip'))
+            for i in range(1, 5):
+                fig_anthro.add_trace(go.Scatterpolar(r=[100 - (20 * i)] * len(categories), theta=angles, marker_line_width=2, fill='toself', marker=dict(color=bgcolors[i-1]), hoverinfo='skip'))
+
+            callout_labels = [f"{int(round(val))}" for val in athlete_percentiles_arr]
+
+            fig_anthro.add_trace(go.Scatterpolar(
+                r=athlete_percentiles_arr, theta=angles, mode='lines+markers+text', text=callout_labels, textposition='middle center',
+                textfont=dict(color='white', size=12, family='Helvetica'),
+                marker=dict(size=26, color='#565A5C', line=dict(color='#CFB87C', width=2)),
+                fill='toself', fillcolor='rgba(207, 184, 124, 0.3)', line=dict(color='#CFB87C', width=3), name='Anthro Profile'
+            ))
+
+            fig_anthro.update_polars(
+                angularaxis=dict(rotation=rotation_angle, tickvals=angles[:-1], ticktext=valid_categories, showgrid=False, layer='above traces'),
+                radialaxis=dict(angle=axis_angle,showticklabels=True, showgrid=False, gridwidth=0, tickfont=dict(color='white', size=12), layer='below traces'),
+                gridshape='linear',
+                bgcolor='rgba(0,0,0,0)'
+            )
+            fig_anthro.update_layout(showlegend=False, paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)', margin=dict(l=20, r=20, t=20, b=20))
+            
+            st.plotly_chart(fig_anthro, width='stretch')
+
+
+# ==========================================
+# COLUMN 3: VALD METRICS
+# ==========================================
+
+percentiles = pd.read_csv("data/vald_norm_percentiles.csv")
+
+with col3:
+    st.subheader("VALD")
+    
+    with st.form(key="vald_input_form"):
+
+        nordic_force = st.number_input("Enter Nordic Force",
+                                 min_value=150.0,
+                                 max_value=675.0,
+                                 key="nordic_force")
+        nordic_imbalance = st.number_input("Enter Nordic Imbalance (absolute value)",
+                                 min_value=0.0,
+                                 max_value=50.0,
+                                 key="nordic_imbalance")
+        adduction_force = st.number_input("Enter Adduction Force",
+                                   min_value=200.0,
+                                   max_value=600.0,
+                                   key="adduction_force")
+        abduction_force = st.number_input("Enter Abduction Force",
+                                         min_value=180.0,
+                                         max_value=550.0,
+                                         key="abduction_force")
+        adduction_imbalance = st.number_input("Enter Adduction Imbalance",
+                                         min_value=0.0,
+                                         max_value=50.0,
+                                         key="adduction_imbalance")
+        abduction_imbalance = st.number_input("Enter Abduction Imbalance",
+                                         min_value=0.0,
+                                         max_value=50.0,
+                                         key="abduction_imbalance")
+        ad_ab_ratio = st.number_input("Enter Adduction:Abduction Ratio",
+                                         min_value=0.30,
+                                         max_value=2.00,
+                                         key="ad_ab_ratio")
+        rsi = st.number_input("Enter RSI",
+                                      min_value=0.50,
+                                      max_value=3.50,
+                                      key="rsi")
+        contact_time = st.number_input("Enter Contact Time", 
+                                     min_value=0.00,
+                                     max_value=1.00, 
+                                     key="contact_time")
+
+        submitted_vald = st.form_submit_button("Calculate Percentiles")
+
+    if submitted_vald:
+        st.session_state.vald_chart_generated = True
+
+    if not st.session_state.vald_chart_generated:
+        st.info("Please fill out the VALD form and click 'Calculate Percentiles' to see your results.")
+        
+        st.session_state.nordic_percentile = percentiles[percentiles['Nordic Force'] <= float(nordic_force)]['Percentile'].max()
+        st.session_state.nordic_imb_percentile = percentiles[percentiles['Nordic Imbalance'] <= float(nordic_imbalance)]['Percentile'].max()
+        st.session_state.adduction_percentile = percentiles[percentiles['Adduction Force'] <= float(adduction_force)]['Percentile'].max()
+        st.session_state.abduction_percentile = percentiles[percentiles['Abduction Force'] <= float(abduction_force)]['Percentile'].max()
+        st.session_state.adduction_imb_percentile = percentiles[percentiles['Adduction Imbalance'] <= float(adduction_imbalance)]['Percentile'].max()
+        st.session_state.abduction_imb_percentile = percentiles[percentiles['Abduction Imbalance'] <= float(abduction_imbalance)]['Percentile'].max()
+        st.session_state.ad_ab_ratio_percentile = percentiles[percentiles['Adduction:Abduction Ratio'] <= float(ad_ab_ratio)]['Percentile'].max()
+        st.session_state.rsi_percentile = percentiles[percentiles['Reactive Strength Index'] <= float(rsi)]['Percentile'].max()
+        st.session_state.contact_time_percentile = percentiles[percentiles['Contact Time'] <= float(contact_time)]['Percentile'].max()
+
+        athlete_percentiles_dict = {
+            'Nordic Force': st.session_state.nordic_percentile * 100,
+            'Nordic Imbalance': st.session_state.nordic_imb_percentile * 100,
+            'Adduction Force': st.session_state.adduction_percentile * 100,
+            'Abduction Force': st.session_state.abduction_percentile * 100,
+            'Adduction Imbalance': st.session_state.adduction_imb_percentile * 100,
+            'Abduction Imbalance': st.session_state.abduction_imb_percentile * 100,
+            'Adduction:Abduction Ratio': st.session_state.ad_ab_ratio_percentile * 100,
+            'RSI': st.session_state.rsi_percentile * 100,
+            'Contact Time': st.session_state.contact_time_percentile * 100
+        }
 
         valid_categories = []
         valid_percentiles = []
