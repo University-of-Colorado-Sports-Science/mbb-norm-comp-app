@@ -45,31 +45,35 @@ with col1:
         draft_status = st.selectbox("Select Draft Status", options=["ALL", "FIRST ROUND", "LOTTERY", "DRAFTED"], key="draft_status")
         position = st.selectbox("Select Position", options=["Guard", "Forward", "Center"], key="position")
 
-        standing_vert = st.number_input("Enter Standing Vert",
-                                         min_value=19.5, 
-                                         max_value=38.0, 
-                                         key="standing_vert")
-        max_vert = st.number_input("Enter Max Vert", 
-                                   min_value=21.0, 
-                                   max_value=46.0, 
-                                   key="max_vert")
-        lane_agility = st.number_input("Enter Lane Agility",
-                                       min_value=10.00,
-                                       max_value=16.00,
-                                       key="lane_agility")
-        shuttle = st.number_input("Enter Shuttle",
-                                  min_value=1.50,
+        comb_col1, comb_col2 = st.columns(2)
+        
+        with comb_col1:
+            standing_vert = st.number_input("Enter Standing Vert",
+                                            min_value=19.5, 
+                                            max_value=38.0, 
+                                            key="standing_vert")
+            max_vert = st.number_input("Enter Max Vert", 
+                                    min_value=21.0, 
+                                    max_value=46.0, 
+                                    key="max_vert")
+            lane_agility = st.number_input("Enter Lane Agility",
+                                        min_value=0.00,
+                                        max_value=16.00,
+                                        key="lane_agility")
+        with comb_col2:
+            shuttle = st.number_input("Enter Shuttle",
+                                  min_value=0,
                                   max_value=4.50,
                                   key="shuttle")
-        sprint = st.number_input("Enter Sprint",
-                                  min_value=2.50,
-                                  max_value=5.00,
-                                  key="sprint")
-        bench_press = st.number_input("Enter Bench Press",
-                                      min_value=0,
-                                      max_value=26,
-                                      step = 1,
-                                      key="bench_press")
+            sprint = st.number_input("Enter Sprint",
+                                    min_value=2.50,
+                                    max_value=5.00,
+                                    key="sprint")
+            bench_press = st.number_input("Enter Bench Press",
+                                        min_value=0,
+                                        max_value=26,
+                                        step = 1,
+                                        key="bench_press")
 
         submitted_combine = st.form_submit_button("Calculate Percentiles")
 
@@ -105,12 +109,16 @@ with col1:
 
         if st.session_state.bench_press == 0:
             athlete_percentiles_dict['Bench'] = None
-        if st.session_state.shuttle == 0:
+        if st.session_state.shuttle == 1.5 or st.session_state.shuttle == 0:
             athlete_percentiles_dict['Shuttle'] = None
-        if st.session_state.sprint == 0:
+        if st.session_state.sprint == 2.5 or st.session_state.sprint == 0:
             athlete_percentiles_dict['Sprint'] = None
         if st.session_state.lane_agility == 0:
             athlete_percentiles_dict['Lane Agility'] = None
+        if st.session_state.standing_vert == 19.5 or st.session_state.standing_vert == 0:
+            athlete_percentiles_dict['Standing Vert'] = None
+        if st.session_state.max_vert == 21 or st.session_state.max_vert == 0:
+            athlete_percentiles_dict['Max Vert'] = None
 
         valid_categories = []
         valid_percentiles = []
@@ -166,30 +174,34 @@ with col2:
         anthro_draft_status = st.selectbox("Select Draft Status", options=["ALL", "FIRST ROUND", "LOTTERY", "DRAFTED"], key="anthro_draft_status")
         anthro_position = st.selectbox("Select Position", options=["Guard", "Forward", "Center"], key="anthro_position")
 
-        height = st.number_input("Enter height",
-                                 min_value=67.0,
-                                 max_value=88.0,
-                                 key="height")
-        weight = st.number_input("Enter Weight",
-                                 min_value=145.0,
-                                 max_value=310.0,
-                                 key="weight")
-        wingspan = st.number_input("Enter Wingspan",
-                                   min_value=68.0,
-                                   max_value=95.0,
-                                   key="wingspan")
-        standing_reach = st.number_input("Enter Standing Reach",
-                                         min_value=88.0,
-                                         max_value=117.0,
-                                         key="standing_reach")
-        hand_length = st.number_input("Enter Hand Length",
-                                      min_value=7.4,
-                                      max_value=11.0,
-                                      key="hand_length")
-        hand_width = st.number_input("Enter Hand Width", 
-                                     min_value=6.8,
-                                     max_value=12.0, 
-                                     key="hand_width")
+        ant_col1, ant_col2 = st.columns(2)
+
+        with ant_col1:
+            height = st.number_input("Enter height",
+                                    min_value=67.0,
+                                    max_value=88.0,
+                                    key="height")
+            weight = st.number_input("Enter Weight",
+                                    min_value=145.0,
+                                    max_value=310.0,
+                                    key="weight")
+            wingspan = st.number_input("Enter Wingspan",
+                                    min_value=68.0,
+                                    max_value=95.0,
+                                    key="wingspan")
+        with ant_col2:
+            standing_reach = st.number_input("Enter Standing Reach",
+                                            min_value=88.0,
+                                            max_value=117.0,
+                                            key="standing_reach")
+            hand_length = st.number_input("Enter Hand Length",
+                                        min_value=7.4,
+                                        max_value=11.0,
+                                        key="hand_length")
+            hand_width = st.number_input("Enter Hand Width", 
+                                        min_value=6.8,
+                                        max_value=12.0, 
+                                        key="hand_width")
 
         submitted_anthro = st.form_submit_button("Calculate Percentiles")
 
@@ -278,42 +290,30 @@ with col3:
     
     with st.form(key="vald_input_form"):
 
-        nordic_force = st.number_input("Enter Nordic Force",
-                                 min_value=150.0,
-                                 max_value=675.0,
-                                 key="nordic_force")
-        nordic_imbalance = st.number_input("Enter Nordic Imbalance (absolute value)",
-                                 min_value=0.0,
-                                 max_value=50.0,
-                                 key="nordic_imbalance")
-        adduction_force = st.number_input("Enter Adduction Force",
-                                   min_value=200.0,
-                                   max_value=600.0,
-                                   key="adduction_force")
-        abduction_force = st.number_input("Enter Abduction Force",
-                                         min_value=180.0,
-                                         max_value=550.0,
-                                         key="abduction_force")
-        adduction_imbalance = st.number_input("Enter Adduction Imbalance",
-                                         min_value=0.0,
-                                         max_value=50.0,
-                                         key="adduction_imbalance")
-        abduction_imbalance = st.number_input("Enter Abduction Imbalance",
-                                         min_value=0.0,
-                                         max_value=50.0,
-                                         key="abduction_imbalance")
-        ad_ab_ratio = st.number_input("Enter Adduction:Abduction Ratio",
-                                         min_value=0.30,
-                                         max_value=2.00,
-                                         key="ad_ab_ratio")
-        rsi = st.number_input("Enter RSI",
-                                      min_value=0.50,
-                                      max_value=3.50,
-                                      key="rsi")
-        contact_time = st.number_input("Enter Contact Time", 
-                                     min_value=0.00,
-                                     max_value=1.00, 
-                                     key="contact_time")
+        vald_col1, vald_col2 = st.columns(2)
+        
+        with vald_col1:
+            nordic_force = st.number_input("Enter Nordic Force",
+                                    min_value=150.0,
+                                    max_value=675.0,
+                                    key="nordic_force")
+            adduction_force = st.number_input("Enter Adduction Force",
+                                    min_value=200.0,
+                                    max_value=600.0,
+                                    key="adduction_force")
+            abduction_force = st.number_input("Enter Abduction Force",
+                                            min_value=180.0,
+                                            max_value=550.0,
+                                            key="abduction_force")
+        with vald_col2:
+            rsi = st.number_input("Enter RSI",
+                                        min_value=0.50,
+                                        max_value=3.50,
+                                        key="rsi")
+            contact_time = st.number_input("Enter Contact Time", 
+                                        min_value=0.00,
+                                        max_value=1.00, 
+                                        key="contact_time")
 
         submitted_vald = st.form_submit_button("Calculate Percentiles")
 
@@ -325,41 +325,25 @@ with col3:
     
     if(st.session_state.vald_chart_generated):
         st.session_state.nordic_percentile = vald_percentiles[vald_percentiles['Nordic Force'] <= float(nordic_force)]['Percentile'].max()
-        st.session_state.nordic_imb_percentile = vald_percentiles[vald_percentiles['Nordic Imbalance'] >= float(nordic_imbalance)]['Percentile'].max()
         st.session_state.adduction_percentile = vald_percentiles[vald_percentiles['Adduction Force'] <= float(adduction_force)]['Percentile'].max()
         st.session_state.abduction_percentile = vald_percentiles[vald_percentiles['Abduction Force'] <= float(abduction_force)]['Percentile'].max()
-        st.session_state.adduction_imb_percentile = vald_percentiles[vald_percentiles['Adduction Imbalance'] >= float(adduction_imbalance)]['Percentile'].max()
-        st.session_state.abduction_imb_percentile = vald_percentiles[vald_percentiles['Abduction Imbalance'] >= float(abduction_imbalance)]['Percentile'].max()
-        st.session_state.ad_ab_ratio_percentile = vald_percentiles[vald_percentiles['Adduction:Abduction Ratio'] <= float(ad_ab_ratio)]['Percentile'].max()
         st.session_state.rsi_percentile = vald_percentiles[vald_percentiles['Reactive Strength Index'] <= float(rsi)]['Percentile'].max()
         st.session_state.contact_time_percentile = vald_percentiles[vald_percentiles['Contact Time'] >= float(contact_time)]['Percentile'].max()
 
         athlete_percentiles_dict = {
             'Nordic Force': st.session_state.nordic_percentile * 100,
-            'Nordic Imbalance': st.session_state.nordic_imb_percentile * 100,
             'Adduction Force': st.session_state.adduction_percentile * 100,
             'Abduction Force': st.session_state.abduction_percentile * 100,
-            'Adduction Imbalance': st.session_state.adduction_imb_percentile * 100,
-            'Abduction Imbalance': st.session_state.abduction_imb_percentile * 100,
-            'Adduction:Abduction Ratio': st.session_state.ad_ab_ratio_percentile * 100,
             'RSI': st.session_state.rsi_percentile * 100,
             'Contact Time': st.session_state.contact_time_percentile * 100
         }
 
         if st.session_state.nordic_force == 150:
             athlete_percentiles_dict['Nordic Force'] = None
-        if st.session_state.nordic_imbalance == 0:
-            athlete_percentiles_dict['Nordic Imbalance'] = None
         if st.session_state.adduction_force == 200:
             athlete_percentiles_dict['Adduction Force'] = None
         if st.session_state.abduction_force == 180:
             athlete_percentiles_dict['Abduction Force'] = None
-        if st.session_state.adduction_imbalance == 0:
-            athlete_percentiles_dict['Adduction Imbalance'] = None
-        if st.session_state.abduction_imbalance == 0:
-            athlete_percentiles_dict['Abduction Imbalance'] = None
-        if st.session_state.ad_ab_ratio == 0.30:
-            athlete_percentiles_dict['Adduction:Abduction Ratio'] = None
         if st.session_state.rsi == 0.5:
             athlete_percentiles_dict['RSI'] = None
         if st.session_state.contact_time == 0:
