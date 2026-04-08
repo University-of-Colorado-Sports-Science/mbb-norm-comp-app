@@ -18,6 +18,8 @@ if "combine_chart_generated" not in st.session_state:
     st.session_state.combine_chart_generated = False
 if "anthro_chart_generated" not in st.session_state:
     st.session_state.anthro_chart_generated = False
+if "vald_chart_generated" not in st.session_state:
+    st.session_state.vald_chart_generated = False
 
 # Load the pre-calculated percentiles dataset
 @st.cache_data # Adding a cache here speeds up loads!
