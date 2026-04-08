@@ -341,24 +341,25 @@ with col3:
             'Contact Time': st.session_state.contact_time_percentile * 100
         }
 
-        if st.session_state.nordic_force == 150:
-            athlete_percentiles_dict['Nordic Force'] = None
-        if st.session_state.adduction_force == 200:
-            athlete_percentiles_dict['Adduction Force'] = None
-        if st.session_state.abduction_force == 180:
-            athlete_percentiles_dict['Abduction Force'] = None
-        if st.session_state.rsi == 0.5:
-            athlete_percentiles_dict['RSI'] = None
-        if st.session_state.contact_time == 0:
-            athlete_percentiles_dict['Contact Time'] = None
-
         valid_categories = []
         valid_percentiles = []
+        valid_quartiles = []
 
         for metric, value in athlete_percentiles_dict.items():
             if value is not None and not pd.isna(value):
                 valid_categories.append(metric)
                 valid_percentiles.append(value)
+
+                if value >= 75:
+                    quartile_str = "Q4"
+                elif value >= 50:
+                    quartile_str = "Q3"
+                elif value >= 25:
+                    quartile_str = "Q2"
+                else:
+                    quartile_str = "Q1"
+            
+                valid_quartiles.append(quartile_str)
 
         if len(valid_categories) < 3:
             st.warning("Not enough data to draw a radar profile. Please enter at least 3 metrics.")
@@ -393,6 +394,21 @@ with col3:
             fig_vald.update_layout(showlegend=False, paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)', margin=dict(l=20, r=20, t=20, b=20))
             
             st.plotly_chart(fig_vald, width='stretch')
+
+            st.divider() # A nice visual break between the chart and the numbers
+
+            # Create a mini 2-column grid inside your main column
+            metric_cols = st.columns(2)
+
+            # Loop through both lists simultaneously 
+            for i, (category, quartile) in enumerate(zip(valid_categories, valid_quartiles)):
+                
+                # i % 2 alternates the remainder between 0 and 1. 
+                # This automatically zig-zags your metrics into the two columns!
+                col_index = i % 2 
+                
+                with metric_cols[col_index]:
+                    st.metric(label=category, value=quartile)
 
 st.divider()
 
