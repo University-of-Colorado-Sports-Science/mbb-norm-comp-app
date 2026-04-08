@@ -110,7 +110,7 @@ with col1:
 
         if st.session_state.bench_press == 0:
             athlete_percentiles_dict['Bench'] = None
-        if st.session_state.shuttle == 1.5 or st.session_state.shuttle == 0:
+        if st.session_state.shuttle == 0:
             athlete_percentiles_dict['Shuttle'] = None
         if st.session_state.sprint == 2.5 or st.session_state.sprint == 0:
             athlete_percentiles_dict['Sprint'] = None
