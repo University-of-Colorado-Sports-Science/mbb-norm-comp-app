@@ -60,6 +60,7 @@ with col1:
                                         min_value=0.00,
                                         max_value=16.00,
                                         key="lane_agility")
+            
         with comb_col2:
             shuttle = st.number_input("Enter Shuttle",
                                   min_value=0,
@@ -189,6 +190,7 @@ with col2:
                                     min_value=68.0,
                                     max_value=95.0,
                                     key="wingspan")
+            
         with ant_col2:
             standing_reach = st.number_input("Enter Standing Reach",
                                             min_value=88.0,
@@ -305,6 +307,7 @@ with col3:
                                             min_value=180.0,
                                             max_value=550.0,
                                             key="abduction_force")
+            
         with vald_col2:
             rsi = st.number_input("Enter RSI",
                                         min_value=0.50,
