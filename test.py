@@ -25,8 +25,9 @@ if "vald_chart_generated" not in st.session_state:
 @st.cache_data # Adding a cache here speeds up loads!
 def load_data():
     return pd.read_csv("data/Combine_Percentiles.csv")
-    
+   
 percentiles = load_data()
+vald_percentiles = pd.read_csv("data/vald_norm_percentiles.csv")
 
 # Background styling for charts
 bgcolors = ["#565A5C", "#787B7D", "#9A9C9D", "#BBBDBE", "#DDDEDE"]
@@ -270,7 +271,7 @@ with col2:
 # COLUMN 3: VALD METRICS
 # ==========================================
 
-percentiles = pd.read_csv("data/vald_norm_percentiles.csv")
+
 
 with col3:
     st.subheader("VALD")
@@ -321,16 +322,17 @@ with col3:
 
     if not st.session_state.vald_chart_generated:
         st.info("Please fill out the VALD form and click 'Calculate Percentiles' to see your results.")
-        
-        st.session_state.nordic_percentile = percentiles[percentiles['Nordic Force'] <= float(nordic_force)]['Percentile'].max()
-        st.session_state.nordic_imb_percentile = percentiles[percentiles['Nordic Imbalance'] <= float(nordic_imbalance)]['Percentile'].max()
-        st.session_state.adduction_percentile = percentiles[percentiles['Adduction Force'] <= float(adduction_force)]['Percentile'].max()
-        st.session_state.abduction_percentile = percentiles[percentiles['Abduction Force'] <= float(abduction_force)]['Percentile'].max()
-        st.session_state.adduction_imb_percentile = percentiles[percentiles['Adduction Imbalance'] <= float(adduction_imbalance)]['Percentile'].max()
-        st.session_state.abduction_imb_percentile = percentiles[percentiles['Abduction Imbalance'] <= float(abduction_imbalance)]['Percentile'].max()
-        st.session_state.ad_ab_ratio_percentile = percentiles[percentiles['Adduction:Abduction Ratio'] <= float(ad_ab_ratio)]['Percentile'].max()
-        st.session_state.rsi_percentile = percentiles[percentiles['Reactive Strength Index'] <= float(rsi)]['Percentile'].max()
-        st.session_state.contact_time_percentile = percentiles[percentiles['Contact Time'] <= float(contact_time)]['Percentile'].max()
+    
+    if(st.session_state.vald_chart_generated):
+        st.session_state.nordic_percentile = vald_percentiles[vald_percentiles['Nordic Force'] <= float(nordic_force)]['Percentile'].max()
+        st.session_state.nordic_imb_percentile = vald_percentiles[vald_percentiles['Nordic Imbalance'] >= float(nordic_imbalance)]['Percentile'].max()
+        st.session_state.adduction_percentile = vald_percentiles[vald_percentiles['Adduction Force'] <= float(adduction_force)]['Percentile'].max()
+        st.session_state.abduction_percentile = vald_percentiles[vald_percentiles['Abduction Force'] <= float(abduction_force)]['Percentile'].max()
+        st.session_state.adduction_imb_percentile = vald_percentiles[vald_percentiles['Adduction Imbalance'] >= float(adduction_imbalance)]['Percentile'].max()
+        st.session_state.abduction_imb_percentile = vald_percentiles[vald_percentiles['Abduction Imbalance'] >= float(abduction_imbalance)]['Percentile'].max()
+        st.session_state.ad_ab_ratio_percentile = vald_percentiles[vald_percentiles['Adduction:Abduction Ratio'] <= float(ad_ab_ratio)]['Percentile'].max()
+        st.session_state.rsi_percentile = vald_percentiles[vald_percentiles['Reactive Strength Index'] <= float(rsi)]['Percentile'].max()
+        st.session_state.contact_time_percentile = vald_percentiles[vald_percentiles['Contact Time'] >= float(contact_time)]['Percentile'].max()
 
         athlete_percentiles_dict = {
             'Nordic Force': st.session_state.nordic_percentile * 100,
